@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Deo Digital Solutions — Docs Generator (Invoice · Receipt · Quotation)</title>
+  <meta name="theme-color" content="#1fa67a">
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIkRvY3MgR2VuZXJhdG9yIiwgInNob3J0X25hbWUiOiAiRG9jc0dlbiIsICJkZXNjcmlwdGlvbiI6ICJHZW5lcmF0ZSBJbnZvaWNlcywgUXVvdGVzLCBSZWNlaXB0cyIsICJzdGFydF91cmwiOiAiLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjRmYmZmIiwgInRoZW1lX2NvbG9yIjogIiMxZmE2N2EiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTlRFeUlpQm9aV2xuYUhROUlqVXhNaUlnZG1sbGQwSnZlRDBpTUNBd0lEVXhNaUExTVRJaUlHWnBiR3c5SW01dmJtVWlJSGh0Ykc1elBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SStDanh5WldOMElIZHBaSFJvUFNJMU1USWlJR2hsYVdkb2REMGlOVEV5SWlCbWFXeHNQU0lqTVdaaE5qZGhJaTgrQ2p4MFpYaDBJSGc5SWpJMU5pSWdlVDBpTXpBd0lpQm1iMjUwTFdaaGJXbHNlVDBpUVhKcFlXd2lJR1p2Ym5RdGMybDZaVDBpTWpBd0lpQm1hV3hzUFNKM2FHbDBaU0lnZEdWNGRDMWhibU5vYjNJOUltMXBaR1JzWlNJZ1pIazlJaTR6WlcwaVBrUThMM1JsZUhRK0Nqd3ZjM1puUGc9PSIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+  <title>Docs Generator</title>
   <style>
     :root{
       --green:#1fa67a; --light-blue:#6ec8ff; --yellow:#ffd24d;
-      --blue-stamp:#1e88e5;
       --bg:#f4fbff; --card:#ffffff; --muted:#64748b; --text:#042034;
       --radius:12px; --shadow:0 8px 30px rgba(6,20,30,0.06);
       font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
@@ -15,13 +16,6 @@
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,var(--bg),#ffffff);color:var(--text);min-height:100vh}
     .wrap{max-width:1150px;margin:22px auto;padding:18px}
-
-    /* header */
-    header{display:flex;flex-direction:column;align-items:center;gap:8px}
-    .logo-large{width:160px;height:160px;border-radius:16px;background:linear-gradient(135deg,var(--green),var(--light-blue));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:36px}
-    h1{margin:0;font-size:22px}
-    .contacts{color:var(--muted);font-size:13px;text-align:center}
-    .brand-strip{height:6px;width:100%;border-radius:6px;margin-top:12px;background:linear-gradient(90deg,var(--green),var(--light-blue),var(--yellow))}
 
     /* layout */
     .main{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
@@ -56,7 +50,7 @@
     .qr{margin-top:10px;display:flex;justify-content:center}
 
     /* stamp */
-    .stamp-rect{display:inline-block;padding:10px 14px;border:3px solid var(--blue-stamp);color:var(--blue-stamp);font-weight:800;border-radius:6px;background:rgba(30,136,229,0.04);}
+    .stamp-rect{display:inline-block;padding:12px 16px;border:3px solid #1e88e5;color:#1e88e5;font-weight:800;border-radius:8px;background:#ffffff;text-align:center; box-shadow: 0 4px 12px rgba(30,136,229,0.2);}
 
     /* signature */
     .signature{margin-top:16px;text-align:left}
@@ -67,19 +61,12 @@
     .history-list{max-height:420px;overflow:auto;margin-top:8px}
     .history-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px dashed #eef6ff}
 
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
-
-    @media (max-width:980px){.main{grid-template-columns:1fr}.logo-large{width:120px;height:120px}}
+    @media (max-width:980px){.main{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
+  <div id="logoBox" style="display:none;"></div>
   <div class="wrap">
-    <header>
-      <div id="logoBox" class="logo-large">DDS</div>
-      <h1>Deo Digital Solutions</h1>
-      <div class="contacts">Nasser Business Centre, Kampala · +256 701 234 567 · info@deodigital.com · www.deodigital.com</div>
-      <div class="brand-strip"></div>
-    </header>
 
     <div class="main">
       <!-- LEFT: form -->
@@ -184,6 +171,21 @@
           <div style="width:120px"><label>Currency</label><select id="currency"><option>UGX</option></select></div>
         </div>
 
+        <div style="margin-top:8px">
+          <label>Signature Name</label>
+          <input id="sigName" type="text" value="Ayebare Deogratious" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Signature Title</label>
+          <input id="sigTitle" type="text" value="CEO, Deo Digital Solutions" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Signature Phone</label>
+          <input id="sigPhone" type="text" value="0703490110" />
+        </div>
+
         <div style="margin-top:12px;display:flex;gap:8px">
           <button id="previewBtn" class="btn btn-primary">Preview Document</button>
           <button id="saveBtn" class="btn btn-accent">Save to Local History</button>
@@ -197,7 +199,7 @@
       <div class="panel">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div style="font-weight:800">Preview</div>
-          <div class="small">Download · Stamp · Save</div>
+          <div class="small">Download · Save</div>
         </div>
 
         <div id="previewArea" class="preview" style="margin-top:12px;min-height:200px">
@@ -206,7 +208,6 @@
 
         <div style="display:flex;gap:8px;margin-top:10px">
           <button id="downloadPdf" class="btn btn-primary" style="display:none">Download PDF</button>
-          <button id="applyStamp" class="btn btn-accent" style="display:none">Apply Stamp</button>
           <button id="exportJson" class="btn btn-ghost">Export History (JSON)</button>
           <button id="importJson" class="btn btn-ghost">Import History</button>
           <input id="importFile" type="file" accept="application/json" style="display:none" />
@@ -218,7 +219,6 @@
       </div>
     </div>
 
-    <footer>Deo Digital Solutions · Nasser Business Centre, Kampala · +256 701 234 567 · info@deodigital.com</footer>
   </div>
 
   <!-- libraries -->
@@ -226,6 +226,76 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
   <script>
+    // PWA Service Worker and Install
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swCode = `
+const CACHE_NAME = 'docs-gen-v1';
+const urlsToCache = ['/'];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).catch(() => {
+          return caches.match('/');
+        });
+      })
+  );
+});
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl)
+          .then(reg => console.log('SW registered', reg))
+          .catch(err => console.log('SW failed', err));
+      });
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      let installBtn = document.getElementById('installBtn');
+      if (!installBtn) {
+        installBtn = document.createElement('button');
+        installBtn.id = 'installBtn';
+        installBtn.textContent = 'Install App';
+        installBtn.className = 'btn btn-primary';
+        installBtn.style.position = 'fixed';
+        installBtn.style.bottom = '20px';
+        installBtn.style.right = '20px';
+        installBtn.style.zIndex = '1000';
+        document.body.appendChild(installBtn);
+      }
+      installBtn.style.display = 'block';
+      installBtn.onclick = () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            console.log('Installed');
+          }
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      };
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('App installed');
+      deferredPrompt = null;
+    });
+
     // --- service maps ---
     const subServices = {
       'Website Development':[ 'Business Website','Portfolio Website','E-Commerce Website','Blog / News Website','NGO / School Website','Real Estate Website','Custom Web App' ],
@@ -244,6 +314,9 @@
     const clientName = document.getElementById('clientName');
     const clientContact = document.getElementById('clientContact');
     const projectDesc = document.getElementById('projectDesc');
+    const sigName = document.getElementById('sigName');
+    const sigTitle = document.getElementById('sigTitle');
+    const sigPhone = document.getElementById('sigPhone');
     const itemsTableBody = document.querySelector('#itemsTable tbody');
     const newDesc = document.getElementById('newDesc');
     const newCategory = document.getElementById('newCategory');
@@ -260,7 +333,6 @@
     const previewBtn = document.getElementById('previewBtn');
     const previewDiv = document.getElementById('docPreview');
     const downloadPdf = document.getElementById('downloadPdf');
-    const applyStamp = document.getElementById('applyStamp');
     const saveBtn = document.getElementById('saveBtn');
     const resetBtn = document.getElementById('resetBtn');
     const historyList = document.getElementById('historyList');
@@ -281,7 +353,7 @@
     populateSub(newCategory.value, newSub);
     newCategory.addEventListener('change',()=>populateSub(newCategory.value,newSub));
 
-    // logo preview
+    // logo preview (hidden)
     logoUpload.addEventListener('change', e=>{
       const f = e.target.files[0]; if(!f) return;
       const r = new FileReader(); r.onload = ev=>{ logoBox.innerHTML=''; const img = document.createElement('img'); img.src = ev.target.result; img.style.width='160px'; img.style.height='160px'; img.style.objectFit='contain'; img.style.borderRadius='12px'; logoBox.appendChild(img); logoBox.dataset.src = ev.target.result; };
@@ -343,55 +415,116 @@
       const id = idPrefix + '-' + Date.now();
       const date = docDate.value || new Date().toISOString().slice(0,10);
       const obj = {
-        id, type: docType.value, date, client: clientName.value.trim()||'Client', contact: clientContact.value.trim(), project: projectDesc.value.trim(), items: JSON.parse(JSON.stringify(items)), taxPct: Number(taxPct.value||0), totals: totals(), paymentMethod: paymentMethod.value, status: paymentStatus.value, paid: Number(amountPaid.value||0), txn: txnRef.value.trim(), logo: logoBox.dataset.src || null
+        id, type: docType.value, date, client: clientName.value.trim()||'Client', contact: clientContact.value.trim(), project: projectDesc.value.trim(), items: JSON.parse(JSON.stringify(items)), taxPct: Number(taxPct.value||0), totals: totals(), paymentMethod: paymentMethod.value, status: paymentStatus.value, paid: Number(amountPaid.value||0), txn: txnRef.value.trim(), logo: logoBox.dataset.src || null,
+        sigName: sigName.value.trim() || 'Signature', sigTitle: sigTitle.value.trim() || '', sigPhone: sigPhone.value.trim() || ''
       };
       return obj;
     }
 
-    // render preview document with distinct receipt layout
+    // PDF options
+    const pdfOpt = { margin:10, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'pt',format:'a4',orientation:'portrait'} };
+
+    // render preview document
     function renderDoc(obj){
       currentDoc = obj; previewDiv.style.display='block'; previewDiv.innerHTML='';
       const div = document.createElement('div'); div.className='doc';
 
-      // RECEIPT layout (distinct)
-      if(obj.type === 'receipt'){
-        // centered logo and contact already in header; show receipt content only
-        const title = document.createElement('div'); title.style.textAlign='center'; title.innerHTML = `<div style='font-weight:800;font-size:18px;color:var(--green)'>Receipt</div><div class='small'>${obj.id}</div><div class='small' style='margin-top:6px'>Date: ${obj.date}</div>`;
-        div.appendChild(title);
+      // Company header
+      const companyHeader = document.createElement('div');
+      companyHeader.style.textAlign = 'center';
+      companyHeader.style.marginBottom = '20px';
+      if (obj.logo) {
+        const logoImg = document.createElement('img');
+        logoImg.src = obj.logo;
+        logoImg.style.width = '120px';
+        logoImg.style.height = 'auto';
+        logoImg.style.display = 'block';
+        logoImg.style.margin = '0 auto 10px';
+        companyHeader.appendChild(logoImg);
+      }
+      const companyName = document.createElement('div');
+      companyName.innerHTML = '<div style="font-weight:800; font-size:18px; color:var(--green);">Deo Digital Solutions</div>';
+      companyHeader.appendChild(companyName);
+      const locationDiv = document.createElement('div');
+      locationDiv.className = 'small';
+      locationDiv.textContent = 'Nasser Business Centre, Kampala';
+      companyHeader.appendChild(locationDiv);
+      const phoneDiv = document.createElement('div');
+      phoneDiv.className = 'small';
+      phoneDiv.textContent = '+256 701 234 567';
+      companyHeader.appendChild(phoneDiv);
+      const emailDiv = document.createElement('div');
+      emailDiv.className = 'small';
+      emailDiv.textContent = 'info@deodigital.com';
+      companyHeader.appendChild(emailDiv);
+      const webDiv = document.createElement('div');
+      webDiv.className = 'small';
+      webDiv.textContent = 'www.deodigital.com';
+      companyHeader.appendChild(webDiv);
+      div.appendChild(companyHeader);
 
-        const info = document.createElement('div'); info.style.marginTop='18px'; info.innerHTML = `<div style='font-weight:700'>Received From</div><div>${obj.client}</div><div class='small'>${obj.contact}</div><div style='margin-top:10px'><span style='font-weight:700'>Service:</span> ${obj.items[0]? obj.items[0].cat + ' - ' + obj.items[0].sub : '-'}</div><div style='margin-top:8px'><span style='font-weight:700'>Amount Paid:</span> <strong>${formatCurrency(obj.paid || obj.totals.total)}</strong></div><div style='margin-top:6px'><span class='small'>Payment Method:</span> ${obj.paymentMethod} · <span class='small'>Ref:</span> ${obj.txn||'-'}</div>`;
+      // Title and meta
+      const titleDiv = document.createElement('div');
+      titleDiv.style.textAlign = 'center';
+      titleDiv.style.marginBottom = '10px';
+      titleDiv.innerHTML = `<div style='font-weight:800;font-size:18px;color:var(--green)'>${obj.type.toUpperCase()}</div>`;
+      div.appendChild(titleDiv);
+
+      const metaDiv = document.createElement('div');
+      metaDiv.style.textAlign = 'center';
+      metaDiv.className = 'small';
+      metaDiv.innerHTML = `<div>${obj.id}</div><div>Date: ${obj.date}</div>`;
+      if(obj.status==='paid') metaDiv.innerHTML += `<div style='margin-top:8px' class='badge-paid'>FULLY PAID</div>`;
+      else if(obj.status==='partially_paid') metaDiv.innerHTML += `<div style='margin-top:8px' class='badge-partial'>PARTIALLY PAID</div>`;
+      div.appendChild(metaDiv);
+
+      // Body content
+      const qrValue = obj.type === 'receipt' ? `${obj.id}|${obj.client}|${formatCurrency(obj.paid||obj.totals.total)}|${obj.date}` : `${obj.id}|${obj.client}|${formatCurrency(obj.totals.total)}|${obj.date}`;
+      const qrWrap = document.createElement('div'); qrWrap.className='qr'; qrWrap.style.marginTop='18px'; const canvas = document.createElement('canvas'); qrWrap.appendChild(canvas);
+      if(obj.type === 'receipt'){
+        const info = document.createElement('div'); info.style.marginTop='18px'; 
+        let infoHtml = `<div style='font-weight:700'>Received From</div><div>${obj.client}</div><div class='small'>${obj.contact}</div><div style='margin-top:10px'><span style='font-weight:700'>Service:</span> ${obj.items[0]? obj.items[0].cat + ' - ' + obj.items[0].sub : '-'}</div><div style='margin-top:8px'><span style='font-weight:700'>Amount Paid:</span> <strong>${formatCurrency(obj.paid || obj.totals.total)}</strong></div><div style='margin-top:6px'><span class='small'>Payment Method:</span> ${obj.paymentMethod} · <span class='small'>Ref:</span> ${obj.txn||'-'}</div>`;
+        if (obj.status === 'partially_paid') {
+          const balance = obj.totals.total - obj.paid;
+          infoHtml += `<div style='margin-top:8px'><span style='font-weight:700'>Balance Left:</span> <strong>${formatCurrency(balance)}</strong></div>`;
+        }
+        info.innerHTML = infoHtml;
         div.appendChild(info);
 
-        // stamp above signature
-        const sigWrap = document.createElement('div'); sigWrap.style.marginTop='18px'; sigWrap.style.textAlign='left';
-        const stamp = document.createElement('div'); stamp.className='stamp-rect'; stamp.innerHTML = `<div>VERIFIED</div><div style='font-weight:700'>Deo Digital Solutions</div><div style='font-style:italic'>"Visualizing Your Vision"</div><div style='color:var(--blue-stamp);font-weight:700;margin-top:6px'>Date: ${obj.date}</div>`;
-        sigWrap.appendChild(stamp);
-        // signature block
-        const sig = document.createElement('div'); sig.className='sig-block'; sig.style.marginTop='10px'; sig.innerHTML = `<div>_____________________________</div><div class='sig-name'>Ayebare Deogratious</div><div class='small'>CEO, Deo Digital Solutions</div><div class='small'>Tel: 0703490110</div>`;
+        // Cashier Signature
+        const sigWrap = document.createElement('div'); 
+        sigWrap.style.marginTop = '30px'; 
+        sigWrap.style.textAlign = 'right';
+        const sig = document.createElement('div'); 
+        sig.innerHTML = `<div>_____________________________</div><div class='sig-name'>${obj.sigName}</div><div class='small'>Cashier, Deo Digital Solutions</div><div class='small'>Tel: ${obj.sigPhone}</div>`;
         sigWrap.appendChild(sig);
         div.appendChild(sigWrap);
 
-        // QR bottom centered
-        const qrWrap = document.createElement('div'); qrWrap.className='qr'; qrWrap.style.marginTop='18px'; const canvas = document.createElement('canvas'); qrWrap.appendChild(canvas); div.appendChild(qrWrap);
-        previewDiv.appendChild(div);
+        // Stamp below signature
+        const stampWrap = document.createElement('div'); 
+        stampWrap.style.marginTop = '10px'; 
+        stampWrap.style.textAlign = 'right';
+        const stamp = document.createElement('div'); 
+        stamp.className = 'stamp-rect'; 
+        stamp.style.display = 'inline-block';
+        stamp.style.transform = 'rotate(-2deg)';
+        let stampHtml = '';
+        if (obj.logo) {
+          stampHtml += `<img src="${obj.logo}" style="width:40px; height:40px; margin:0 auto 8px; display:block; object-fit:contain; border-radius:50%; border:2px solid #1e88e5;" />`;
+        }
+        stampHtml += `<div style='font-size:14px;'>CASHIER</div><div style='font-weight:700; font-size:16px;'>DEO DIGITAL SOLUTIONS</div><div style='font-style:italic; font-size:12px; margin-top:4px;'>"Visualising Your Vision"</div><div style='color:red;font-weight:700;margin-top:8px; font-size:14px;'>Date: ${obj.date}</div>`;
+        stamp.innerHTML = stampHtml;
+        stampWrap.appendChild(stamp);
+        div.appendChild(stampWrap);
 
-        // create QR
-        new QRious({ element: canvas, value: `${obj.id}|${obj.client}|${formatCurrency(obj.paid||obj.totals.total)}|${obj.date}`, size:140 });
+        div.appendChild(qrWrap);
+
+        // Thank you at bottom
+        const thankYou = document.createElement('div'); thankYou.style.marginTop='18px'; thankYou.style.textAlign='center'; thankYou.style.fontSize='20px'; thankYou.style.fontWeight='700'; thankYou.style.color='var(--green)'; thankYou.textContent='Thank You!';
+        div.appendChild(thankYou);
 
       } else {
-        // INVOICE / QUOTATION layout (with items)
-        // header with logo on left and meta on right
-        const header = document.createElement('header'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='flex-start';
-        // company block (logo handled at top of page) but keep company info left
-        const comp = document.createElement('div'); comp.innerHTML = `<div style='font-weight:800;color:var(--green);font-size:18px'>Deo Digital Solutions</div><div class='small'>Nasser Business Centre, Kampala, Uganda</div><div class='small'>+256 701 234 567 · info@deodigital.com · www.deodigital.com</div>`;
-        header.appendChild(comp);
-        const meta = document.createElement('div'); meta.className='meta'; meta.innerHTML = `<div style='font-weight:800'>${obj.type.toUpperCase()}</div><div class='small'>${obj.id}</div><div class='small'>Date: ${obj.date}</div>`;
-        if(obj.status==='paid') meta.innerHTML += `<div style='margin-top:8px' class='badge-paid'>FULLY PAID</div>`;
-        else if(obj.status==='partially_paid') meta.innerHTML += `<div style='margin-top:8px' class='badge-partial'>PARTIALLY PAID</div>`;
-        header.appendChild(meta);
-        div.appendChild(header);
-
-        // bill to and project
+        // INVOICE / QUOTATION
         const body = document.createElement('section'); body.style.marginTop='12px'; body.innerHTML = `<div style='display:flex;justify-content:space-between;gap:12px'><div><div style='font-weight:700'>Bill to</div><div>${obj.client}</div><div class='small'>${obj.contact}</div></div><div style='text-align:right'><div style='font-weight:700'>Project</div><div class='small'>${obj.project}</div></div></div>`;
         div.appendChild(body);
 
@@ -404,30 +537,44 @@
         // totals and payment summary
         body.innerHTML += `<div style='margin-top:12px;text-align:right'><div class='small'>Subtotal: <strong>${formatCurrency(obj.totals.subtotal)}</strong></div><div class='small'>Tax (${obj.taxPct}%): <strong>${formatCurrency(obj.totals.tax)}</strong></div><div style='margin-top:8px;font-size:16px'>Total: <strong>${formatCurrency(obj.totals.total)}</strong></div></div>`;
 
-        // signature and stamp area (stamp above signature)
-        const sigWrap = document.createElement('div'); sigWrap.style.marginTop='18px'; sigWrap.style.textAlign='left';
-        const stamp = document.createElement('div'); stamp.className='stamp-rect'; stamp.innerHTML = `<div>VERIFIED</div><div style='font-weight:700'>Deo Digital Solutions</div><div style='font-style:italic'>"Visualizing Your Vision"</div><div style='color:var(--blue-stamp);font-weight:700;margin-top:6px'>Date: ${obj.date}</div>`;
-        sigWrap.appendChild(stamp);
-        const sig = document.createElement('div'); sig.className='sig-block'; sig.style.marginTop='10px'; sig.innerHTML = `<div>_____________________________</div><div class='sig-name'>Ayebare Deogratious</div><div class='small'>CEO, Deo Digital Solutions</div><div class='small'>Tel: 0703490110</div>`;
+        // Signature
+        const sigWrap = document.createElement('div'); sigWrap.style.marginTop='18px'; sigWrap.style.textAlign='right';
+        const sig = document.createElement('div'); sig.className='sig-block'; sig.innerHTML = `<div style="width:200px;">_____________________________</div><div class='sig-name'>${obj.sigName}</div><div class='small'>${obj.sigTitle}</div><div class='small'>Tel: ${obj.sigPhone}</div>`;
         sigWrap.appendChild(sig);
         div.appendChild(sigWrap);
 
-        // QR bottom centered
-        const qrWrap = document.createElement('div'); qrWrap.className='qr'; qrWrap.style.marginTop='18px'; const canvas = document.createElement('canvas'); qrWrap.appendChild(canvas); div.appendChild(qrWrap);
-        previewDiv.appendChild(div);
+        // Stamp below signature
+        const stampWrap = document.createElement('div'); 
+        stampWrap.style.marginTop = '10px'; 
+        stampWrap.style.textAlign = 'right';
+        const stamp = document.createElement('div'); 
+        stamp.className = 'stamp-rect'; 
+        stamp.style.display = 'inline-block';
+        stamp.style.transform = 'rotate(-2deg)';
+        let stampHtml = `<div style='font-size:14px;'>VERIFIED</div>`;
+        if (obj.logo) {
+          stampHtml = `<img src="${obj.logo}" style="width:40px; height:40px; margin:0 auto 8px; display:block; object-fit:contain; border-radius:50%; border:2px solid #1e88e5;" />` + stampHtml;
+        }
+        stampHtml += `<div style='font-weight:700; font-size:16px;'>DEO DIGITAL SOLUTIONS</div><div style='font-style:italic; font-size:12px; margin-top:4px;'>"Visualising Your Vision"</div><div style='color:red;font-weight:700;margin-top:8px; font-size:14px;'>Date: ${obj.date}</div>`;
+        stamp.innerHTML = stampHtml;
+        stampWrap.appendChild(stamp);
+        div.appendChild(stampWrap);
 
-        // create QR
-        new QRious({ element: canvas, value: `${obj.id}|${obj.client}|${formatCurrency(obj.totals.total)}|${obj.date}`, size:140 });
+        div.appendChild(qrWrap);
       }
 
+      previewDiv.appendChild(div);
+
+      // create QR
+      new QRious({ element: canvas, value: qrValue, size:140 });
+
       // show actions
-      downloadPdf.style.display='inline-block'; applyStamp.style.display='inline-block';
+      downloadPdf.style.display='inline-block';
     }
 
     // preview button
     previewBtn.addEventListener('click', ()=>{
       if(docType.value !== 'receipt' && items.length===0) return alert('Add at least one item for invoices/quotations');
-      // for receipts, ensure at least one service selected (you can choose first row)
       if(docType.value === 'receipt' && items.length===0){ alert('Add or choose a service for the receipt in the items section'); return; }
       const obj = genDoc(); renderDoc(obj);
     });
@@ -435,14 +582,7 @@
     // download pdf
     downloadPdf.addEventListener('click', ()=>{
       const node = document.querySelector('.doc'); if(!node) return alert('Preview first');
-      const opt = { margin:10, filename:(currentDoc?currentDoc.id:'document')+'.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'pt',format:'a4',orientation:'portrait'} };
-      html2pdf().set(opt).from(node).save();
-    });
-
-    // apply stamp (adds visual stamp above signature — here it's already included in preview, this can duplicate if clicked)
-    applyStamp.addEventListener('click', ()=>{
-      // re-render to ensure stamp present (stamp is part of preview already)
-      if(currentDoc) renderDoc(currentDoc);
+      html2pdf().set(pdfOpt).set({filename:(currentDoc?currentDoc.id:'document')+'.pdf'}).from(node).save();
     });
 
     // save to history (localStorage)
@@ -459,7 +599,7 @@
         const row = document.createElement('div'); row.className='history-item'; row.innerHTML = `<div><div style='font-weight:800'>${it.type.toUpperCase()} • ${it.id}</div><div class='small'>${it.client} · ${it.date}</div></div>`;
         const actions = document.createElement('div'); actions.style.display='flex'; actions.style.gap='8px';
         const view = document.createElement('button'); view.className='btn btn-ghost'; view.textContent='View'; view.addEventListener('click', ()=>{ renderDoc(it); window.scrollTo({top:0,behavior:'smooth'}); });
-        const dl = document.createElement('button'); dl.className='btn btn-accent'; dl.textContent='Download'; dl.addEventListener('click', ()=>{ const node = document.querySelector('.doc'); if(!node) return alert('Preview first'); html2pdf().from(node).save(); });
+        const dl = document.createElement('button'); dl.className='btn btn-accent'; dl.textContent='Download'; dl.addEventListener('click', ()=>{ renderDoc(it); setTimeout(() => { html2pdf().set(pdfOpt).set({filename:it.id+'.pdf'}).from(document.querySelector('.doc')).save(); }, 500); });
         const del = document.createElement('button'); del.className='btn btn-ghost'; del.textContent='Delete'; del.addEventListener('click', ()=>{ if(!confirm('Delete this record?')) return; const arr = loadHistory(); arr.splice(idx,1); localStorage.setItem('dds_history', JSON.stringify(arr)); renderHistory(); });
         actions.appendChild(view); actions.appendChild(dl); actions.appendChild(del); row.appendChild(actions); historyList.appendChild(row);
       });
@@ -471,7 +611,7 @@
     importFile.addEventListener('change', e=>{ const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ev => { try{ const data = JSON.parse(ev.target.result); localStorage.setItem('dds_history', JSON.stringify(data)); renderHistory(); alert('Imported history'); }catch(err){ alert('Invalid JSON file'); } }; r.readAsText(f); });
 
     // reset form
-    resetBtn.addEventListener('click', ()=>{ if(!confirm('Reset form?')) return; clientName.value=''; clientContact.value=''; projectDesc.value=''; items=[]; renderItems(); taxPct.value=0; amountPaid.value=''; txnRef.value=''; previewDiv.innerHTML=''; downloadPdf.style.display='none'; applyStamp.style.display='none'; });
+    resetBtn.addEventListener('click', ()=>{ if(!confirm('Reset form?')) return; clientName.value=''; clientContact.value=''; projectDesc.value=''; items=[]; renderItems(); taxPct.value=0; amountPaid.value=''; txnRef.value=''; sigName.value='Ayebare Deogratious'; sigTitle.value='CEO, Deo Digital Solutions'; sigPhone.value='0703490110'; previewDiv.innerHTML=''; downloadPdf.style.display='none'; });
 
     // initial render
     renderItems(); renderHistory();
