@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Deo Digital Solutions — Docs Generator (Invoice · Receipt · Quotation)</title>
+  <style>
+    :root{
+      --green:#1fa67a; --light-blue:#6ec8ff; --yellow:#ffd24d;
+      --blue-stamp:#1e88e5;
+      --bg:#f4fbff; --card:#ffffff; --muted:#64748b; --text:#042034;
+      --radius:12px; --shadow:0 8px 30px rgba(6,20,30,0.06);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#ffffff);color:var(--text);min-height:100vh}
+    .wrap{max-width:1150px;margin:22px auto;padding:18px}
+
+    /* header */
+    header{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .logo-large{width:160px;height:160px;border-radius:16px;background:linear-gradient(135deg,var(--green),var(--light-blue));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:36px}
+    h1{margin:0;font-size:22px}
+    .contacts{color:var(--muted);font-size:13px;text-align:center}
+    .brand-strip{height:6px;width:100%;border-radius:6px;margin-top:12px;background:linear-gradient(90deg,var(--green),var(--light-blue),var(--yellow))}
+
+    /* layout */
+    .main{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
+    .panel{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+
+    /* form */
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text], input[type=number], input[type=date], select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e9f4ff;font-size:14px}
+    textarea{min-height:80px}
+
+    .row{display:flex;gap:8px}
+    .col{flex:1}
+    .small{font-size:13px;color:var(--muted)}
+    .btn{padding:10px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .btn-primary{background:var(--green);color:white}
+    .btn-accent{background:var(--light-blue);color:#04325b}
+    .btn-ghost{background:transparent;border:1px solid #eff7ff}
+
+    /* items table (editable form) */
+    table.items{width:100%;border-collapse:collapse;margin-top:10px}
+    table.items th, table.items td{padding:8px;border-bottom:1px dashed #eef6ff;text-align:left;font-size:14px}
+    .small-input{padding:6px;border-radius:6px;border:1px solid #eef7ff}
+
+    /* preview */
+    .preview{overflow:auto}
+    .doc{max-width:820px;margin:12px auto;background:white;padding:20px;border-radius:10px}
+    .doc header{display:flex;justify-content:space-between;align-items:flex-start}
+    .company{display:flex;gap:14px;align-items:center}
+    .meta{ text-align:right }
+    .badge-paid{background:linear-gradient(90deg,var(--green),#0ea36b);color:white;padding:8px 12px;border-radius:8px;font-weight:800}
+    .badge-partial{background:linear-gradient(90deg,#ffd24d,#f6c23e);color:#1b2b2b;padding:8px 12px;border-radius:8px;font-weight:800}
+    .qr{margin-top:10px;display:flex;justify-content:center}
+
+    /* stamp */
+    .stamp-rect{display:inline-block;padding:10px 14px;border:3px solid var(--blue-stamp);color:var(--blue-stamp);font-weight:800;border-radius:6px;background:rgba(30,136,229,0.04);}
+
+    /* signature */
+    .signature{margin-top:16px;text-align:left}
+    .sig-block{margin-top:8px}
+    .sig-name{font-weight:800}
+
+    /* history */
+    .history-list{max-height:420px;overflow:auto;margin-top:8px}
+    .history-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px dashed #eef6ff}
+
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media (max-width:980px){.main{grid-template-columns:1fr}.logo-large{width:120px;height:120px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div id="logoBox" class="logo-large">DDS</div>
+      <h1>Deo Digital Solutions</h1>
+      <div class="contacts">Nasser Business Centre, Kampala · +256 701 234 567 · info@deodigital.com · www.deodigital.com</div>
+      <div class="brand-strip"></div>
+    </header>
+
+    <div class="main">
+      <!-- LEFT: form -->
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Create Document</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label for="logoUpload" style="cursor:pointer" class="small">Upload Logo</label>
+            <input id="logoUpload" type="file" accept="image/*" style="display:none" />
+            <select id="docType" style="padding:8px;border-radius:8px;border:1px solid #eef7ff">
+              <option value="invoice">Invoice</option>
+              <option value="quotation">Quotation</option>
+              <option value="receipt">Receipt</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Document Date</label>
+          <input id="docDate" type="date" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Client / Company</label>
+          <input id="clientName" type="text" placeholder="Client full name or business" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Client contact (phone / email)</label>
+          <input id="clientContact" type="text" placeholder="Phone or email" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Project / Description</label>
+          <input id="projectDesc" type="text" placeholder="Short project description" />
+        </div>
+
+        <!-- Items table -->
+        <div style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">Items</div><div class="small">Add, edit or remove rows</div></div>
+          <table class="items" id="itemsTable">
+            <thead>
+              <tr>
+                <th style="width:26%">Description / Service</th>
+                <th style="width:18%">Category</th>
+                <th style="width:18%">Type / Sub-service</th>
+                <th style="width:8%">Qty</th>
+                <th style="width:12%">Unit Price</th>
+                <th style="width:12%">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="newDesc" placeholder="Description e.g., Website design" style="flex:1;padding:8px" />
+            <select id="newCategory" style="width:180px;padding:8px">
+              <option>Website Development</option>
+              <option>Graphics Design</option>
+              <option>Branding & Printing</option>
+              <option>Cloud Computing</option>
+              <option>IT Support</option>
+              <option>Social Media Management</option>
+            </select>
+            <select id="newSub" style="width:220px;padding:8px"></select>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="newQty" type="number" value="1" style="width:80px;padding:8px" />
+            <input id="newPrice" type="number" value="0" style="width:150px;padding:8px" />
+            <button id="addRow" class="btn btn-accent">Add Row</button>
+            <button id="clearRows" class="btn btn-ghost">Clear Rows</button>
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <div style="flex:1">
+            <label>Tax / VAT %</label>
+            <input id="taxPct" type="number" value="0" />
+          </div>
+          <div style="width:200px">
+            <label>Payment Method</label>
+            <select id="paymentMethod">
+              <option>Cash</option>
+              <option>Mobile Money</option>
+              <option>Bank Transfer</option>
+              <option>Cheque</option>
+              <option>Online Payment</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <div style="flex:1"><label>Payment Status</label><select id="paymentStatus"><option value="pending">Pending</option><option value="partially_paid">Partially Paid</option><option value="paid">Paid</option></select></div>
+          <div style="width:180px"><label>Amount Paid (for partial)</label><input id="amountPaid" type="number" /></div>
+        </div>
+
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <div style="flex:1"><label>Transaction / Reference</label><input id="txnRef" type="text" placeholder="e.g., M-PESA 12345" /></div>
+          <div style="width:120px"><label>Currency</label><select id="currency"><option>UGX</option></select></div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="previewBtn" class="btn btn-primary">Preview Document</button>
+          <button id="saveBtn" class="btn btn-accent">Save to Local History</button>
+          <button id="resetBtn" class="btn btn-ghost">Reset Form</button>
+        </div>
+
+        <div style="margin-top:10px" class="small">Your documents are stored locally in this browser. Use export to move them between devices.</div>
+      </div>
+
+      <!-- RIGHT: preview & history -->
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Preview</div>
+          <div class="small">Download · Stamp · Save</div>
+        </div>
+
+        <div id="previewArea" class="preview" style="margin-top:12px;min-height:200px">
+          <div id="docPreview" class="doc" style="display:none"></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="downloadPdf" class="btn btn-primary" style="display:none">Download PDF</button>
+          <button id="applyStamp" class="btn btn-accent" style="display:none">Apply Stamp</button>
+          <button id="exportJson" class="btn btn-ghost">Export History (JSON)</button>
+          <button id="importJson" class="btn btn-ghost">Import History</button>
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px dashed #eef6ff" />
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">History</div><div class="small">Local records</div></div>
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </div>
+
+    <footer>Deo Digital Solutions · Nasser Business Centre, Kampala · +256 701 234 567 · info@deodigital.com</footer>
+  </div>
+
+  <!-- libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+  <script>
+    // --- service maps ---
+    const subServices = {
+      'Website Development':[ 'Business Website','Portfolio Website','E-Commerce Website','Blog / News Website','NGO / School Website','Real Estate Website','Custom Web App' ],
+      'Graphics Design':[ 'Logo Design','Business Card','Flyer / Poster','Brochure / Catalogue','Social Media Banner','Company Profile','Packaging Design','T-shirt Design' ],
+      'Branding & Printing':[ 'Company Branding Package','Office Signage','Vehicle Branding','T-shirt Printing','Mug Printing','Banner / Roll-up','Stickers & Labels' ],
+      'Cloud Computing':[ 'Cloud Storage Setup','Web Hosting & Domain','Server Management','Backup Solutions','Cloud Security' ],
+      'IT Support':[ 'Computer Maintenance','Network Setup','Software Installation','Data Recovery','System Troubleshooting' ],
+      'Social Media Management':[ 'Page Setup','Content Design','Post Scheduling','Campaign Management','Social Media Ads' ]
+    };
+
+    // DOM refs
+    const logoUpload = document.getElementById('logoUpload');
+    const logoBox = document.getElementById('logoBox');
+    const docType = document.getElementById('docType');
+    const docDate = document.getElementById('docDate');
+    const clientName = document.getElementById('clientName');
+    const clientContact = document.getElementById('clientContact');
+    const projectDesc = document.getElementById('projectDesc');
+    const itemsTableBody = document.querySelector('#itemsTable tbody');
+    const newDesc = document.getElementById('newDesc');
+    const newCategory = document.getElementById('newCategory');
+    const newSub = document.getElementById('newSub');
+    const newQty = document.getElementById('newQty');
+    const newPrice = document.getElementById('newPrice');
+    const addRow = document.getElementById('addRow');
+    const clearRows = document.getElementById('clearRows');
+    const taxPct = document.getElementById('taxPct');
+    const paymentMethod = document.getElementById('paymentMethod');
+    const paymentStatus = document.getElementById('paymentStatus');
+    const amountPaid = document.getElementById('amountPaid');
+    const txnRef = document.getElementById('txnRef');
+    const previewBtn = document.getElementById('previewBtn');
+    const previewDiv = document.getElementById('docPreview');
+    const downloadPdf = document.getElementById('downloadPdf');
+    const applyStamp = document.getElementById('applyStamp');
+    const saveBtn = document.getElementById('saveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const historyList = document.getElementById('historyList');
+    const exportJson = document.getElementById('exportJson');
+    const importJson = document.getElementById('importJson');
+    const importFile = document.getElementById('importFile');
+
+    let items = [];
+    let currentDoc = null;
+
+    // defaults
+    docDate.value = new Date().toISOString().slice(0,10);
+    // populate sub-service for initial category
+    function populateSub(cat, selectEl){
+      selectEl.innerHTML='';
+      (subServices[cat]||[]).forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; selectEl.appendChild(o); });
+    }
+    populateSub(newCategory.value, newSub);
+    newCategory.addEventListener('change',()=>populateSub(newCategory.value,newSub));
+
+    // logo preview
+    logoUpload.addEventListener('change', e=>{
+      const f = e.target.files[0]; if(!f) return;
+      const r = new FileReader(); r.onload = ev=>{ logoBox.innerHTML=''; const img = document.createElement('img'); img.src = ev.target.result; img.style.width='160px'; img.style.height='160px'; img.style.objectFit='contain'; img.style.borderRadius='12px'; logoBox.appendChild(img); logoBox.dataset.src = ev.target.result; };
+      r.readAsDataURL(f);
+    });
+
+    // add row
+    addRow.addEventListener('click', ()=>{
+      const desc = newDesc.value.trim(); const cat = newCategory.value; const sub = newSub.value; const qty = Number(newQty.value||1); const price = Number(newPrice.value||0);
+      if(!desc) return alert('Provide a description for the item');
+      const row = {desc,cat,sub,qty,price}; items.push(row); renderItems(); newDesc.value=''; newQty.value=1; newPrice.value=0;
+    });
+
+    clearRows.addEventListener('click', ()=>{ if(!confirm('Clear all rows?')) return; items=[]; renderItems(); });
+
+    function renderItems(){
+      itemsTableBody.innerHTML='';
+      items.forEach((it,idx)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input class="small-input" data-idx="${idx}" data-field="desc" value="${it.desc}" /></td>
+          <td><select class="small-input" data-idx="${idx}" data-field="cat"></select></td>
+          <td><select class="small-input" data-idx="${idx}" data-field="sub"></select></td>
+          <td><input class="small-input" data-idx="${idx}" data-field="qty" type="number" value="${it.qty}" /></td>
+          <td><input class="small-input" data-idx="${idx}" data-field="price" type="number" value="${it.price}" /></td>
+          <td>${formatCurrency(it.qty*it.price)}</td>
+          <td><button class="btn btn-ghost" data-remove="${idx}">Remove</button></td>
+        `;
+        itemsTableBody.appendChild(tr);
+      });
+
+      // populate selects and wire inputs
+      items.forEach((it,idx)=>{
+        const catSelect = itemsTableBody.querySelector(`select[data-idx='${idx}'][data-field='cat']`);
+        const subSelect = itemsTableBody.querySelector(`select[data-idx='${idx}'][data-field='sub']`);
+        Object.keys(subServices).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; if(k===it.cat) o.selected=true; catSelect.appendChild(o); });
+        populateSub(it.cat, subSelect);
+        subSelect.value = it.sub;
+
+        // attach change listeners
+        ['desc','qty','price'].forEach(field=>{
+          const el = itemsTableBody.querySelector(`[data-idx='${idx}'][data-field='${field}']`);
+          el.addEventListener('input', ()=>{ const v = el.value; if(field==='qty'||field==='price'){ items[idx][field] = Number(v||0); } else items[idx][field]=v; renderItems(); });
+        });
+        catSelect.addEventListener('change', ()=>{ items[idx].cat=catSelect.value; populateSub(catSelect.value, subSelect); renderItems(); });
+        subSelect.addEventListener('change', ()=>{ items[idx].sub=subSelect.value; renderItems(); });
+      });
+
+      document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click', ()=>{ const i = Number(b.getAttribute('data-remove')); items.splice(i,1); renderItems(); }));
+    }
+
+    function formatCurrency(n){ return (document.getElementById('currency').value||'UGX') + ' ' + Number(n).toLocaleString('en-UG'); }
+
+    function totals(){ const subtotal = items.reduce((s,it)=> s + it.qty*it.price, 0); const tax = subtotal * (Number(taxPct.value||0)/100); const total = subtotal + tax; return {subtotal,tax,total}; }
+
+    // generate doc object
+    function genDoc(){
+      const idPrefix = docType.value === 'invoice' ? 'DDS-INV' : docType.value === 'quotation' ? 'DDS-QUO' : 'DDS-RCT';
+      const id = idPrefix + '-' + Date.now();
+      const date = docDate.value || new Date().toISOString().slice(0,10);
+      const obj = {
+        id, type: docType.value, date, client: clientName.value.trim()||'Client', contact: clientContact.value.trim(), project: projectDesc.value.trim(), items: JSON.parse(JSON.stringify(items)), taxPct: Number(taxPct.value||0), totals: totals(), paymentMethod: paymentMethod.value, status: paymentStatus.value, paid: Number(amountPaid.value||0), txn: txnRef.value.trim(), logo: logoBox.dataset.src || null
+      };
+      return obj;
+    }
+
+    // render preview document with distinct receipt layout
+    function renderDoc(obj){
+      currentDoc = obj; previewDiv.style.display='block'; previewDiv.innerHTML='';
+      const div = document.createElement('div'); div.className='doc';
+
+      // RECEIPT layout (distinct)
+      if(obj.type === 'receipt'){
+        // centered logo and contact already in header; show receipt content only
+        const title = document.createElement('div'); title.style.textAlign='center'; title.innerHTML = `<div style='font-weight:800;font-size:18px;color:var(--green)'>Receipt</div><div class='small'>${obj.id}</div><div class='small' style='margin-top:6px'>Date: ${obj.date}</div>`;
+        div.appendChild(title);
+
+        const info = document.createElement('div'); info.style.marginTop='18px'; info.innerHTML = `<div style='font-weight:700'>Received From</div><div>${obj.client}</div><div class='small'>${obj.contact}</div><div style='margin-top:10px'><span style='font-weight:700'>Service:</span> ${obj.items[0]? obj.items[0].cat + ' - ' + obj.items[0].sub : '-'}</div><div style='margin-top:8px'><span style='font-weight:700'>Amount Paid:</span> <strong>${formatCurrency(obj.paid || obj.totals.total)}</strong></div><div style='margin-top:6px'><span class='small'>Payment Method:</span> ${obj.paymentMethod} · <span class='small'>Ref:</span> ${obj.txn||'-'}</div>`;
+        div.appendChild(info);
+
+        // stamp above signature
+        const sigWrap = document.createElement('div'); sigWrap.style.marginTop='18px'; sigWrap.style.textAlign='left';
+        const stamp = document.createElement('div'); stamp.className='stamp-rect'; stamp.innerHTML = `<div>VERIFIED</div><div style='font-weight:700'>Deo Digital Solutions</div><div style='font-style:italic'>"Visualizing Your Vision"</div><div style='color:var(--blue-stamp);font-weight:700;margin-top:6px'>Date: ${obj.date}</div>`;
+        sigWrap.appendChild(stamp);
+        // signature block
+        const sig = document.createElement('div'); sig.className='sig-block'; sig.style.marginTop='10px'; sig.innerHTML = `<div>_____________________________</div><div class='sig-name'>Ayebare Deogratious</div><div class='small'>CEO, Deo Digital Solutions</div><div class='small'>Tel: 0703490110</div>`;
+        sigWrap.appendChild(sig);
+        div.appendChild(sigWrap);
+
+        // QR bottom centered
+        const qrWrap = document.createElement('div'); qrWrap.className='qr'; qrWrap.style.marginTop='18px'; const canvas = document.createElement('canvas'); qrWrap.appendChild(canvas); div.appendChild(qrWrap);
+        previewDiv.appendChild(div);
+
+        // create QR
+        new QRious({ element: canvas, value: `${obj.id}|${obj.client}|${formatCurrency(obj.paid||obj.totals.total)}|${obj.date}`, size:140 });
+
+      } else {
+        // INVOICE / QUOTATION layout (with items)
+        // header with logo on left and meta on right
+        const header = document.createElement('header'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='flex-start';
+        // company block (logo handled at top of page) but keep company info left
+        const comp = document.createElement('div'); comp.innerHTML = `<div style='font-weight:800;color:var(--green);font-size:18px'>Deo Digital Solutions</div><div class='small'>Nasser Business Centre, Kampala, Uganda</div><div class='small'>+256 701 234 567 · info@deodigital.com · www.deodigital.com</div>`;
+        header.appendChild(comp);
+        const meta = document.createElement('div'); meta.className='meta'; meta.innerHTML = `<div style='font-weight:800'>${obj.type.toUpperCase()}</div><div class='small'>${obj.id}</div><div class='small'>Date: ${obj.date}</div>`;
+        if(obj.status==='paid') meta.innerHTML += `<div style='margin-top:8px' class='badge-paid'>FULLY PAID</div>`;
+        else if(obj.status==='partially_paid') meta.innerHTML += `<div style='margin-top:8px' class='badge-partial'>PARTIALLY PAID</div>`;
+        header.appendChild(meta);
+        div.appendChild(header);
+
+        // bill to and project
+        const body = document.createElement('section'); body.style.marginTop='12px'; body.innerHTML = `<div style='display:flex;justify-content:space-between;gap:12px'><div><div style='font-weight:700'>Bill to</div><div>${obj.client}</div><div class='small'>${obj.contact}</div></div><div style='text-align:right'><div style='font-weight:700'>Project</div><div class='small'>${obj.project}</div></div></div>`;
+        div.appendChild(body);
+
+        // items table
+        let html = `<table style='width:100%;border-collapse:collapse;margin-top:12px'><thead><tr style='background:linear-gradient(90deg,var(--light-blue),var(--green));color:white'><th style='padding:8px'>Description</th><th style='padding:8px'>Category</th><th style='padding:8px'>Type</th><th style='padding:8px'>Qty</th><th style='padding:8px'>Unit</th><th style='padding:8px'>Amount</th></tr></thead><tbody>`;
+        obj.items.forEach(it=>{ html += `<tr><td style='padding:8px'>${it.desc}</td><td style='padding:8px'>${it.cat}</td><td style='padding:8px'>${it.sub}</td><td style='padding:8px'>${it.qty}</td><td style='padding:8px'>${formatCurrency(it.price)}</td><td style='padding:8px'>${formatCurrency(it.qty*it.price)}</td></tr>`; });
+        html += `</tbody></table>`;
+        body.innerHTML += html;
+
+        // totals and payment summary
+        body.innerHTML += `<div style='margin-top:12px;text-align:right'><div class='small'>Subtotal: <strong>${formatCurrency(obj.totals.subtotal)}</strong></div><div class='small'>Tax (${obj.taxPct}%): <strong>${formatCurrency(obj.totals.tax)}</strong></div><div style='margin-top:8px;font-size:16px'>Total: <strong>${formatCurrency(obj.totals.total)}</strong></div></div>`;
+
+        // signature and stamp area (stamp above signature)
+        const sigWrap = document.createElement('div'); sigWrap.style.marginTop='18px'; sigWrap.style.textAlign='left';
+        const stamp = document.createElement('div'); stamp.className='stamp-rect'; stamp.innerHTML = `<div>VERIFIED</div><div style='font-weight:700'>Deo Digital Solutions</div><div style='font-style:italic'>"Visualizing Your Vision"</div><div style='color:var(--blue-stamp);font-weight:700;margin-top:6px'>Date: ${obj.date}</div>`;
+        sigWrap.appendChild(stamp);
+        const sig = document.createElement('div'); sig.className='sig-block'; sig.style.marginTop='10px'; sig.innerHTML = `<div>_____________________________</div><div class='sig-name'>Ayebare Deogratious</div><div class='small'>CEO, Deo Digital Solutions</div><div class='small'>Tel: 0703490110</div>`;
+        sigWrap.appendChild(sig);
+        div.appendChild(sigWrap);
+
+        // QR bottom centered
+        const qrWrap = document.createElement('div'); qrWrap.className='qr'; qrWrap.style.marginTop='18px'; const canvas = document.createElement('canvas'); qrWrap.appendChild(canvas); div.appendChild(qrWrap);
+        previewDiv.appendChild(div);
+
+        // create QR
+        new QRious({ element: canvas, value: `${obj.id}|${obj.client}|${formatCurrency(obj.totals.total)}|${obj.date}`, size:140 });
+      }
+
+      // show actions
+      downloadPdf.style.display='inline-block'; applyStamp.style.display='inline-block';
+    }
+
+    // preview button
+    previewBtn.addEventListener('click', ()=>{
+      if(docType.value !== 'receipt' && items.length===0) return alert('Add at least one item for invoices/quotations');
+      // for receipts, ensure at least one service selected (you can choose first row)
+      if(docType.value === 'receipt' && items.length===0){ alert('Add or choose a service for the receipt in the items section'); return; }
+      const obj = genDoc(); renderDoc(obj);
+    });
+
+    // download pdf
+    downloadPdf.addEventListener('click', ()=>{
+      const node = document.querySelector('.doc'); if(!node) return alert('Preview first');
+      const opt = { margin:10, filename:(currentDoc?currentDoc.id:'document')+'.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'pt',format:'a4',orientation:'portrait'} };
+      html2pdf().set(opt).from(node).save();
+    });
+
+    // apply stamp (adds visual stamp above signature — here it's already included in preview, this can duplicate if clicked)
+    applyStamp.addEventListener('click', ()=>{
+      // re-render to ensure stamp present (stamp is part of preview already)
+      if(currentDoc) renderDoc(currentDoc);
+    });
+
+    // save to history (localStorage)
+    function loadHistory(){ return JSON.parse(localStorage.getItem('dds_history')||'[]'); }
+    function saveHistory(item){ const h = loadHistory(); h.unshift(item); localStorage.setItem('dds_history', JSON.stringify(h)); renderHistory(); }
+
+    saveBtn.addEventListener('click', ()=>{
+      if(docType.value !== 'receipt' && items.length===0) return alert('Add items before saving');
+      const obj = genDoc(); saveHistory(obj); alert('Saved to history on this browser');
+    });
+
+    function renderHistory(){ const h = loadHistory(); historyList.innerHTML=''; if(h.length===0){ historyList.innerHTML='<div class="small">No saved documents</div>'; return; }
+      h.forEach((it,idx)=>{
+        const row = document.createElement('div'); row.className='history-item'; row.innerHTML = `<div><div style='font-weight:800'>${it.type.toUpperCase()} • ${it.id}</div><div class='small'>${it.client} · ${it.date}</div></div>`;
+        const actions = document.createElement('div'); actions.style.display='flex'; actions.style.gap='8px';
+        const view = document.createElement('button'); view.className='btn btn-ghost'; view.textContent='View'; view.addEventListener('click', ()=>{ renderDoc(it); window.scrollTo({top:0,behavior:'smooth'}); });
+        const dl = document.createElement('button'); dl.className='btn btn-accent'; dl.textContent='Download'; dl.addEventListener('click', ()=>{ const node = document.querySelector('.doc'); if(!node) return alert('Preview first'); html2pdf().from(node).save(); });
+        const del = document.createElement('button'); del.className='btn btn-ghost'; del.textContent='Delete'; del.addEventListener('click', ()=>{ if(!confirm('Delete this record?')) return; const arr = loadHistory(); arr.splice(idx,1); localStorage.setItem('dds_history', JSON.stringify(arr)); renderHistory(); });
+        actions.appendChild(view); actions.appendChild(dl); actions.appendChild(del); row.appendChild(actions); historyList.appendChild(row);
+      });
+    }
+
+    // export/import history
+    exportJson.addEventListener('click', ()=>{ const data = loadHistory(); if(data.length===0) return alert('No history to export'); const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'dds_history.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
+    importJson.addEventListener('click', ()=>importFile.click());
+    importFile.addEventListener('change', e=>{ const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ev => { try{ const data = JSON.parse(ev.target.result); localStorage.setItem('dds_history', JSON.stringify(data)); renderHistory(); alert('Imported history'); }catch(err){ alert('Invalid JSON file'); } }; r.readAsText(f); });
+
+    // reset form
+    resetBtn.addEventListener('click', ()=>{ if(!confirm('Reset form?')) return; clientName.value=''; clientContact.value=''; projectDesc.value=''; items=[]; renderItems(); taxPct.value=0; amountPaid.value=''; txnRef.value=''; previewDiv.innerHTML=''; downloadPdf.style.display='none'; applyStamp.style.display='none'; });
+
+    // initial render
+    renderItems(); renderHistory();
+  </script>
+</body>
+</html>
